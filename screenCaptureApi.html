@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Recording</title>
+    <script defer src="./script.js"></script>
+</head>
+<body>
+    <button id="start" >Start Recording</button>
+    <button id="stop" >Stop Recording</button>
+    
+    <video src="./" width="1280" height="720" style="border: 1px solid red;" controls autoplay></video>
+
+    <script>
+
+        const play = document.getElementById("start");
+        play.addEventListener('click',()=>{
+            start()
+        })
+
+        //config
+        const config={
+            audio:true,
+            video:{mediaSource:"screen"}
+        }
+        const start = async()=>{
+            const stream = await navigator.mediaDevices.getDisplayMedia(config);
+            /*
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video:{mediaSource:"screen"}
+            })
+            */
+
+            //savedata
+            const data=[];
+
+            const mediaRecorder=new MediaRecorder(stream);
+            mediaRecorder.ondataavailable=(e)=>{
+                data.push(e.data);
+            }
+            mediaRecorder.start();
+
+            mediaRecorder.onstop=(e)=>{
+                document.querySelector("video").src=URL.createObjectURL(
+                    new Blob(data,{
+                        type:'video/mp4'
+                    })
+                )
+            }
+        }
+
+
+    </script>
+
+</body>
+</html>
